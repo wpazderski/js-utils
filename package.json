@@ -41,6 +41,7 @@
         "dist"
     ],
     "scripts": {
+        "prepare": "husky",
         "build": "rimraf ./dist/ && rimraf -g ./node_modules/.tmp/*.tsbuildinfo && tsc -b",
         "build-docs": "node ./scripts/build-docs.ts",
         "lint-check": "eslint ./ --flag unstable_native_nodejs_ts_config --flag unstable_config_lookup_from_file --max-warnings 0",
@@ -53,7 +54,7 @@
         "check-all": "run-s lint-check prettier-check tsc-check check-licenses check-outdated-packages",
         "pre-commit-checks": "run-s check-all",
         "dev": "vite --config devServer/vite.config.ts --port 7101",
-        "start-test-server": "cross-env JS_UTILS_IS_TEST_ENV=true vite --config devServer/vite.config.ts --host --port 7101",
+        "start-test-server": "cross-env IS_TEST_ENV=true vite --config devServer/vite.config.ts --host --port 7101",
         "test-chromium": "playwright test --project=chromium",
         "test-firefox": "playwright test --project=firefox",
         "test-webkit": "playwright test --project=webkit",
@@ -72,6 +73,7 @@
         "@wpazderski/typescript-config": "^1.0.4",
         "cross-env": "^10.0.0",
         "eslint": "^9.33.0",
+        "husky": "^9.1.7",
         "npm-run-all": "^4.1.5",
         "prettier": "^3.6.2",
         "rimraf": "^6.0.1",

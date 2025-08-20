@@ -7,6 +7,6 @@ export default defineConfig({
     root: import.meta.dirname,
     define: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        "import.meta.env.isTestEnv": process.env["JS_UTILS_IS_TEST_ENV"] === "true",
+        "import.meta.env.isTestEnv": process.env["IS_TEST_ENV"] === "true",
     },
 });

@@ -1,13 +1,15 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable prefer-template */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { spawn } from "child_process";
 import * as fs from "fs";
+import packageJson from "../package.json" with { type: "json" };
 
 // Config
 const versionsFileName = "./docs/versions";
 const indexHtmlFileName = "./docs/index.html";
 const rootAssetsPath = "./docs/assets/";
+const packageName = packageJson.name;
+const packageVersion = packageJson.version;
 const indexHtmlTemplate =
     `
 <!DOCTYPE html>
@@ -15,8 +17,8 @@ const indexHtmlTemplate =
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="x-ua-compatible" content="IE=edge" />
-        <title>@wpazderski/js-utils</title>
-        <meta name="description" content="Documentation for @wpazderski/js-utils"/>
+        <title>${packageName}</title>
+        <meta name="description" content="Documentation for ${packageName}"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <link rel="stylesheet" href="v{{LATEST_VERSION}}/assets/style.css"/>
         <link rel="stylesheet" href="v{{LATEST_VERSION}}/assets/highlight.css"/>
@@ -33,7 +35,7 @@ const indexHtmlTemplate =
     <body>
         <header class="tsd-page-toolbar">
             <div class="tsd-toolbar-contents container">
-                <a href="index.html" class="title">@wpazderski/js-utils</a>
+                <a href="index.html" class="title">${packageName}</a>
             </div>
         </header>
         <div class="container container-main">
@@ -47,11 +49,8 @@ const indexHtmlTemplate =
 `.trim() + "\n";
 const versionHtmlTemplate = `                <li><a href="./v{{VERSION}}/index.html">v{{VERSION}}</a></li>`;
 
-// Get the package version from package.json
-const packageVersion = JSON.parse(fs.readFileSync("./package.json", "utf-8")).version as string;
-process.env["PACKAGE_VERSION"] = packageVersion;
-
 // Generate documentation using typedoc
+process.env["PACKAGE_VERSION"] = packageVersion;
 await new Promise<void>((resolve, reject) => {
     spawn("pnpm", ["exec", "typedoc"], {
         stdio: "inherit",
@@ -65,6 +64,7 @@ await new Promise<void>((resolve, reject) => {
 });
 
 // Fix misplaced assets in the generated docs
+// See https://github.com/JulianWowra/typedoc-github-theme/pull/6
 const assetsPath = `./docs/v${packageVersion}/assets/`;
 const rootAssets = fs.readdirSync(rootAssetsPath);
 for (const asset of rootAssets) {
