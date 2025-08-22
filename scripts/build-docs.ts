@@ -7,7 +7,6 @@ import packageJson from "../package.json" with { type: "json" };
 // Config
 const versionsFileName = "./docs/versions";
 const indexHtmlFileName = "./docs/index.html";
-const rootAssetsPath = "./docs/assets/";
 const packageName = packageJson.name;
 const packageVersion = packageJson.version;
 const indexHtmlTemplate =
@@ -62,19 +61,6 @@ await new Promise<void>((resolve, reject) => {
         }
     });
 });
-
-// Fix misplaced assets in the generated docs
-// See https://github.com/JulianWowra/typedoc-github-theme/pull/6
-const assetsPath = `./docs/v${packageVersion}/assets/`;
-const rootAssets = fs.readdirSync(rootAssetsPath);
-for (const asset of rootAssets) {
-    const sourcePath = `${rootAssetsPath}${asset}`;
-    const targetPath = `${assetsPath}${asset}`;
-    if (!fs.existsSync(targetPath)) {
-        fs.renameSync(sourcePath, targetPath);
-    }
-}
-fs.rmdirSync(rootAssetsPath);
 
 // Append the current package version to the versions file
 const versions = fs.existsSync(versionsFileName)
